@@ -1,2 +1,3 @@
 #OYUNN YAZILIMINA BAŞLANIYOR NE TARZ OYUN OLDUĞUNU SEÇ
 import pygame 
+import os

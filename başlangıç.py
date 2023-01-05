@@ -7,15 +7,16 @@ import random
 
 #penceresi yazılıyor
 
-genişlik= 750
-yükseklik= 600
-ekran=py.display.set_mode((genişlik,yükseklik))
+GENİŞLİK= 750
+YÜKSEKLİK= 600
+EKRAN=py.display.set_mode((GENİŞLİK,YÜKSEKLİK))
 
 #resimleri yüklemek
-
+#ARKAplan
 BG=py.image.load(os.path.join("proje için","background_space.png"))
 
-
+#Görev Gemisi
+GOREV_GEMİSİ = py.image.load(os.path.join("proje için","mission_ship.png"))
 
 def main():
     run = True
@@ -24,7 +25,7 @@ def main():
 
 
     def çizmek():
-        ekran.blit(BG, (0,0))
+        EKRAN.blit(BG, (0,0))
 
         py.display.update()
 

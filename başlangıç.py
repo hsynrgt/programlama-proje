@@ -4,7 +4,7 @@
 import pygame  as py
 import os
 import random
-
+py.font.init()
 #penceresi yazılıyor
 
 GENİŞLİK= 750
@@ -81,6 +81,11 @@ def main():
     düşmanlar = []
     düşman_hızı = 1
     düşman_uzunluk = 0
+    seviye = 0
+
+    main_font=py.font.SysFont("Algerian",30)
+
+    
 
     oyuncu_hızı = 5
 
@@ -94,6 +99,10 @@ def main():
     def çizmek():
         EKRAN.blit(BG, (0,0))
         oyuncu.çizmek(EKRAN)
+        seviye_etiketi=main_font.render("SEVİYE: {}".format(seviye),1,(255,255,0))
+        EKRAN.blit(seviye_etiketi,(600,10))
+
+
         for düşman in düşmanlar:
             düşman.çizmek(EKRAN)
 
@@ -107,6 +116,7 @@ def main():
         if len(düşmanlar) == 0:
             düşman_hızı += 1
             düşman_uzunluk += 5
+            seviye += 1
             for i in range(düşman_uzunluk):
                 düşman = DüşmanGemisi(random.randrange(1,700), random.randrange(-1500,-100),random.choice(["red","blue","green"])) 
                 düşmanlar.append(düşman)
@@ -128,9 +138,10 @@ def main():
             oyuncu.y += oyuncu_hızı
 
 
-
-            for düşman in düşmanlar:
-                düşman.move(düşman_hızı)
+        for düşman in düşmanlar:
+            düşman.move(düşman_hızı)
+            if düşman.y > YÜKSEKLİK:
+                düşmanlar.remove(düşman)
 
 
 main()

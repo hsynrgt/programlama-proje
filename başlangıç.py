@@ -43,7 +43,7 @@ class Lazer():
         self.y += velocity
         
     def çizmek(self, EKRAN):
-        EKRAN.blit(self.img, (self.x+20,self.y))
+        EKRAN.blit(self.img, (self.x,self.y))
 
 class Gemi():
     def __init__(self,x,y,sağlık=100):
@@ -96,6 +96,12 @@ class OyuncuGemisi(Gemi):
         self.lazer_img = OYUNCU_LAZER
 
 
+    def ates(self):
+        if self.bekleme_suresi_sayaci == 0:
+            lazer = Lazer(self.x+20, self.y, self.lazer_img)
+            self.lazerler.append(lazer)
+
+
 class DüşmanGemisi(Gemi):
     RENK_HARİTASI = {
         "red"  : [KIRMIZI_DÜŞMAN_GEMİSİ, LAZER01],
@@ -109,7 +115,11 @@ class DüşmanGemisi(Gemi):
 
     def move(self, hızı):
         self.y += hızı
-
+    
+    def ates(self):
+        if self.bekleme_suresi_sayaci == 0:
+            lazer = Lazer(self.x-1, self.y, self.lazer_img)
+            self.lazerler.append(lazer)
 
 
 def main():
@@ -183,6 +193,10 @@ def main():
 
         for düşman in düşmanlar:
             düşman.move(düşman_hızı)
+            düşman.hareket_lazerler(lazer_hızı)
+            if random.randrange(0, 2*60) == 1:
+               düşman.ates()
+
             if düşman.y > YÜKSEKLİK:
                 düşmanlar.remove(düşman)
 

@@ -1,8 +1,6 @@
 #OYUNN YAZILIMINA BAŞLANIYOR NE TARZ OYUN OLDUĞUNU SEÇ
 #kullanılacak modüller eklendi
 
-from msilib.schema import SelfReg
-from typing import Self
 import pygame  as py
 import os
 import random
@@ -46,10 +44,10 @@ class Gemi():
     def çizmek(self,ekran):
         ekran.blit(self.gemi_img,(self.x,self.y))
 
-        def get_widht(self):
+    def get_widht(self):
             return self.ship_img.get_widht()
 
-            def get_height(self):
+    def get_height(self):
                 return self.ship_img.get_height()
 
 class OyuncuGemisi(Gemi):
@@ -110,9 +108,8 @@ def main():
             düşman_hızı += 1
             düşman_uzunluk += 5
             for i in range(düşman_uzunluk):
-                düşman = DüşmanGemisi(random.randrange(1,700), random.randrange(-1500,100))
-            random.choice(["red","blue","green"]) 
-            düşman.append(düşman)
+                düşman = DüşmanGemisi(random.randrange(1,700), random.randrange(-1500,-100),random.choice(["red","blue","green"])) 
+                düşmanlar.append(düşman)
 
 
         for event in py.event.get():
@@ -136,4 +133,4 @@ def main():
                 düşman.move(düşman_hızı)
 
 
-                main()
+main()

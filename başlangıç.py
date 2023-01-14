@@ -31,7 +31,18 @@ LAZER01 = py.image.load(os.path.join("proje için", "laser01.png"))
 LAZER02 = py.image.load(os.path.join("proje için", "laser02.png"))
 LAZER03 = py.image.load(os.path.join("proje için", "laser03.png"))
 
+class Lazer():
+    def __init__(self,x,y,img):
+        self.x = x
+        self.y = y
+        self.img = img
 
+
+    def hareket(self,velocity):
+        self.y += velocity
+        
+    def çizmek(self, EKRAN):
+        EKRAN.blit(self.img, (self.x+20,self.y))
 
 class Gemi():
     def __init__(self,x,y,sağlık=100):
@@ -40,9 +51,24 @@ class Gemi():
         self.sağlık=sağlık
         self.gemi_img= None
         self.lazer_img = None
+        self.lazerler = []
+    
+    def ates(self):
+        lazer = Lazer(self.x, self.y, self.lazer_img)
+        self.lazerler.append(lazer)
 
-    def çizmek(self,ekran):
-        ekran.blit(self.gemi_img,(self.x,self.y))
+    def hareket_lazerler(self, velocity):
+        for lazer in self.lazerler:
+            lazer.hareket(velocity)
+
+
+    def çizmek(self, EKRAN):
+        EKRAN.blit(self.gemi_img, (self.x,self.y))
+        for lazer in self.lazerler:
+            lazer.çizmek(EKRAN)
+
+
+        
 
     def get_widht(self):
             return self.ship_img.get_widht()
@@ -80,6 +106,7 @@ def main():
     FPS= 75
     düşmanlar = []
     düşman_hızı = 1
+    lazer_hızı = 5
     düşman_uzunluk = 0
     seviye = 0
 
@@ -136,12 +163,16 @@ def main():
             oyuncu.y -= oyuncu_hızı
         if keys[py.K_DOWN] and oyuncu.y < 490:
             oyuncu.y += oyuncu_hızı
-
+        if keys [py.K_SPACE]:
+            oyuncu.ates()
+           
 
         for düşman in düşmanlar:
             düşman.move(düşman_hızı)
             if düşman.y > YÜKSEKLİK:
                 düşmanlar.remove(düşman)
 
+
+        oyuncu.hareket_lazerler(-lazer_hızı)
 
 main()

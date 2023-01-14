@@ -10,6 +10,7 @@ py.font.init()
 GENİŞLİK= 750
 YÜKSEKLİK= 600
 EKRAN=py.display.set_mode((GENİŞLİK,YÜKSEKLİK))
+beklemesuresi = 30
 
 #resimleri yüklemek
 #ARKAplan
@@ -52,12 +53,22 @@ class Gemi():
         self.gemi_img= None
         self.lazer_img = None
         self.lazerler = []
+        self.bekleme_suresi_sayaci = 0
+
+    def beklemesuresi(self):
+        if self.bekleme_suresi_sayaci >= beklemesuresi:
+           self.bekleme_suresi_sayaci = 0
+        else:
+            self.bekleme_suresi_sayaci += 1   
+
     
     def ates(self):
-        lazer = Lazer(self.x, self.y, self.lazer_img)
-        self.lazerler.append(lazer)
+        if self.bekleme_suresi_sayaci == 0:
+            lazer = Lazer(self.x, self.y, self.lazer_img)
+            self.lazerler.append(lazer)
 
     def hareket_lazerler(self, velocity):
+        self.beklemesuresi()
         for lazer in self.lazerler:
             lazer.hareket(velocity)
 
@@ -144,6 +155,9 @@ def main():
             düşman_hızı += 1
             düşman_uzunluk += 5
             seviye += 1
+            global beklemesuresi
+            beklemesuresi -=5
+
             for i in range(düşman_uzunluk):
                 düşman = DüşmanGemisi(random.randrange(1,700), random.randrange(-1500,-100),random.choice(["red","blue","green"])) 
                 düşmanlar.append(düşman)

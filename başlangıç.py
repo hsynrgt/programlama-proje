@@ -32,11 +32,18 @@ LAZER01 = py.image.load(os.path.join("proje için", "laser01.png"))
 LAZER02 = py.image.load(os.path.join("proje için", "laser02.png"))
 LAZER03 = py.image.load(os.path.join("proje için", "laser03.png"))
 
+
+def carpisma(object1, object2):
+    offset_x = object2.x - object1.x
+    offset_y= object2.y - object1.y
+    return object1.mask.overlap(object2.mask, (offset_x, offset_y)) != None
+
 class Lazer():
     def __init__(self,x,y,img):
         self.x = x
         self.y = y
         self.img = img
+        self.mask = py.mask.from_surface(self.img)
 
 
     def hareket(self,velocity):
@@ -44,6 +51,10 @@ class Lazer():
         
     def çizmek(self, EKRAN):
         EKRAN.blit(self.img, (self.x,self.y))
+
+    def collision (self, object):
+        return carpisma (object, self)
+
 
 class Gemi():
     def __init__(self,x,y,sağlık=100):
@@ -67,11 +78,13 @@ class Gemi():
             lazer = Lazer(self.x, self.y, self.lazer_img)
             self.lazerler.append(lazer)
 
-    def hareket_lazerler(self, velocity):
+    def hareket_lazerler(self, velocity, object):
         self.beklemesuresi()
         for lazer in self.lazerler:
             lazer.hareket(velocity)
-
+            if lazer.collision(object):
+                object.health -= 10
+                self.lazerler.remove(lazer)
 
     def çizmek(self, EKRAN):
         EKRAN.blit(self.gemi_img, (self.x,self.y))
@@ -94,12 +107,24 @@ class OyuncuGemisi(Gemi):
         super().__init__(x,y,sağlık)
         self.gemi_img = GOREV_GEMİSİ
         self.lazer_img = OYUNCU_LAZER
+        self.mask = py.mask.from_surface(self.ship_img)
 
 
     def ates(self):
         if self.bekleme_suresi_sayaci == 0:
             lazer = Lazer(self.x+20, self.y, self.lazer_img)
             self.lazerler.append(lazer)
+
+    def hareket_lazerler(self, velocity, objects):
+        self.beklemesuresi()
+        for lazer in self.lazerler:           
+            lazer.hareket(velocity)
+            for object in objects:
+                if lazer.collision(object):
+                   objects.remove(object)
+                   self.lazerler.remove(lazer)
+
+
 
 
 class DüşmanGemisi(Gemi):
@@ -112,6 +137,7 @@ class DüşmanGemisi(Gemi):
     def __init__(self,x,y,renk,sağlık=100):
          super().__init__(x,y,sağlık)
          self.gemi_img, self.lazer_img = self.RENK_HARİTASI[renk]
+         self.mask = py.mask.from_surface(self.ship_img)
 
     def move(self, hızı):
         self.y += hızı
@@ -163,6 +189,7 @@ def main():
 
         if len(düşmanlar) == 0:
             düşman_hızı += 1
+            düşman_hızı += 1
             düşman_uzunluk += 5
             seviye += 1
             global beklemesuresi
@@ -193,7 +220,7 @@ def main():
 
         for düşman in düşmanlar:
             düşman.move(düşman_hızı)
-            düşman.hareket_lazerler(lazer_hızı)
+            düşman.hareket_lazerler(lazer_hızı, oyuncu)
             if random.randrange(0, 2*60) == 1:
                düşman.ates()
 
@@ -201,6 +228,6 @@ def main():
                 düşmanlar.remove(düşman)
 
 
-        oyuncu.hareket_lazerler(-lazer_hızı)
+        oyuncu.hareket_lazerler(-lazer_hızı, düşmanlar)
 
 main()

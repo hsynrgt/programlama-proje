@@ -35,7 +35,7 @@ LAZER03 = py.image.load(os.path.join("proje için", "laser03.png"))
 
 def carpisma(object1, object2):
     offset_x = object2.x - object1.x
-    offset_y= object2.y - object1.y
+    offset_y = object2.y - object1.y
     return object1.mask.overlap(object2.mask, (offset_x, offset_y)) != None
 
 class Lazer():
@@ -53,7 +53,7 @@ class Lazer():
         EKRAN.blit(self.img, (self.x,self.y))
 
     def collision (self, object):
-        return carpisma (object, self)
+        return carpisma(object, self)
 
 
 class Gemi():
@@ -83,7 +83,7 @@ class Gemi():
         for lazer in self.lazerler:
             lazer.hareket(velocity)
             if lazer.collision(object):
-                object.health -= 10
+                object.sağlık -= 10
                 self.lazerler.remove(lazer)
 
     def çizmek(self, EKRAN):
@@ -107,7 +107,7 @@ class OyuncuGemisi(Gemi):
         super().__init__(x,y,sağlık)
         self.gemi_img = GOREV_GEMİSİ
         self.lazer_img = OYUNCU_LAZER
-        self.mask = py.mask.from_surface(self.ship_img)
+        self.mask = py.mask.from_surface(self.gemi_img)
 
 
     def ates(self):
@@ -137,7 +137,7 @@ class DüşmanGemisi(Gemi):
     def __init__(self,x,y,renk,sağlık=100):
          super().__init__(x,y,sağlık)
          self.gemi_img, self.lazer_img = self.RENK_HARİTASI[renk]
-         self.mask = py.mask.from_surface(self.ship_img)
+         self.mask = py.mask.from_surface(self.gemi_img)
 
     def move(self, hızı):
         self.y += hızı
@@ -189,7 +189,7 @@ def main():
 
         if len(düşmanlar) == 0:
             düşman_hızı += 1
-            düşman_hızı += 1
+            lazer_hızı += 1
             düşman_uzunluk += 5
             seviye += 1
             global beklemesuresi

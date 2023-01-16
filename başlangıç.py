@@ -108,6 +108,7 @@ class OyuncuGemisi(Gemi):
         self.gemi_img = GOREV_GEMİSİ
         self.lazer_img = OYUNCU_LAZER
         self.mask = py.mask.from_surface(self.gemi_img)
+        self.max_sağlık = sağlık
 
 
     def ates(self):
@@ -123,6 +124,17 @@ class OyuncuGemisi(Gemi):
                 if lazer.collision(object):
                    objects.remove(object)
                    self.lazerler.remove(lazer)
+
+def healthbar(self, EKRAN):
+    py.draw.rect(EKRAN, (255,0,0), (self.x, self.y + self.ship_img.get_height(),
+     self.ship_img.get_width(), 7))
+
+    py.draw.rect(EKRAN, (0,255,0), (self.x, self.y + self.ship_img.get_height(),
+     int (self.ship_img.get_width() * (self.sağlık/self.max_sağlık)), 7))
+
+def çizmek(self, EKRAN):
+ EKRAN.blit(self.gemi_img, (self.x,self.y))
+ self.healthbar(EKRAN)
 
 
 
@@ -223,6 +235,11 @@ def main():
             düşman.hareket_lazerler(lazer_hızı, oyuncu)
             if random.randrange(0, 2*60) == 1:
                düşman.ates()
+
+        
+            if carpisma(düşman, oyuncu):
+                oyuncu.sağlık -= 10
+                düşmanlar.remove(düşman)
 
             if düşman.y > YÜKSEKLİK:
                 düşmanlar.remove(düşman)

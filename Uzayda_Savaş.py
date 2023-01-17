@@ -55,6 +55,9 @@ class Lazer():
     def collision (self, object):
         return carpisma(object, self)
 
+    def off_screen(self, height):
+        return not(self.y <= height and self.y >=0)
+
 
 class Gemi():
     def __init__(self,x,y,sağlık=100):
@@ -82,7 +85,9 @@ class Gemi():
         self.beklemesuresi()
         for lazer in self.lazerler:
             lazer.hareket(velocity)
-            if lazer.collision(object):
+            if lazer.off_screen(YÜKSEKLİK):
+                self.lazerler.remove(lazer)
+            elif lazer.collision(object):
                 object.sağlık -= 10
                 self.lazerler.remove(lazer)
 
@@ -120,11 +125,14 @@ class OyuncuGemisi(Gemi):
         self.beklemesuresi()
         for lazer in self.lazerler:           
             lazer.hareket(velocity)
-            for object in objects:
-                if lazer.collision(object):
-                   objects.remove(object)
-                   if lazer in self.lazerler:
-                        self.lazerler.remove(lazer)
+            if lazer.off_screen(YÜKSEKLİK):
+                self.lazerler.remove(lazer)
+            else:
+                for object in objects:
+                    if lazer.collision(object):
+                        objects.remove(object)
+                        if lazer in self.lazerler:
+                            self.lazerler.remove(lazer)
 
     def can_barı(self, EKRAN):
         py.draw.rect(EKRAN, (255,0,0), (self.x, self.y + self.gemi_img.get_height(),
@@ -265,4 +273,25 @@ def main():
 
         oyuncu.hareket_lazerler(-lazer_hızı, düşmanlar)
 
-main()
+def main_menu():
+    title_font = py.font.SysFont("Algerian", 50)
+    run = True
+    while run:
+        EKRAN.blit (BG, (0,0))
+        main_text = title_font.render("BAŞLAMAK İÇİN FAREYE TIKLAYINIZ", 1, (255, 255, 255))
+        EKRAN.blit(main_text, (GENİŞLİK/2 - main_text.get_width()/2, YÜKSEKLİK/2 - main_text.get_height()/2))
+         
+         
+        py.display.update()
+        for event in py.event.get():
+            if event.type == py.QUIT:
+                run = False
+            if event.type == py.MOUSEBUTTONDOWN:
+                main()
+        
+    py.quit()
+        
+
+
+
+main_menu()

@@ -206,7 +206,7 @@ def main():
             düşman.çizmek(EKRAN)
 
         if lost:
-            lost_label = lost_font.render("GAME OVER!" , 1 , (200,0,0))
+            lost_label = lost_font.render("BAŞARAMADINIZ!" , 1 , (200,0,0))
             EKRAN.blit(lost_label,(int(GENİŞLİK/2-(lost_label.get_width()/2)),int(YÜKSEKLİK/2-(lost_label.get_height()/2))))
 
         py.display.update()
